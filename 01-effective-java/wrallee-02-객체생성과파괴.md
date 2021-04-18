@@ -68,7 +68,7 @@ public static Boolean valueOf(boolean b) {
 
 일반적인 생성자 패턴의 경우 매개변수가 늘어남에 따라 클라이언트 코드를 작성하거나 읽기 어려워진다. 순서에 따른 값의 의미 파악이 어려워지고 매개변수의 갯수를 세어 보아야 한다. 매개변수의 순서를 바꾸어도 오류 없이 의도와 다른 동작을 하게 되어 버그로도 이어질 수 있다.
 
-이에 대한 대안으로 자바빈즈 패턴(new-setter)을 사용한다 해도 객체가 완전히 생성되기 전까지는 일관성(Consistency)이 무너진 상태에 놓이게 된다. 또한 클래스를 불변객체로 만들수도 없게 된다.
+이에 대한 대안으로 자바빈즈 패턴(new-setter)을 사용한다 해도 객체가 완전히 생성되기 전까지는 일관성(Consistency)이 무너진 상태에 놓이게 된다. 또한 클래스를 불변객체로 만들수도 없게 된다. 물론 freeze 메서드를 만드는 방법도 있지만, 이 방법은 다루기도 어렵고 freeze 호출여부를 감지할 수 없어 런타임 오류에 취약하다.
 
 
 
@@ -131,5 +131,51 @@ NutrionFacts cocaCola = new NutrionFacts.Builder(240, 8)
     .calories(100).sodium(35).carbohydrate(27).build();
 ```
 
-빌더 패턴에서의 불변식 검사는 `build` 메서드가 호출하는 생성자에서 수행한다. 또한 공격에 대비해 불변식을 보장하려면 빌더로부터 매개변수를 복사한 후 해당 객체 필드들도 검사해야 한다.
+빌더 패턴에서의 불변식(invariant) 검사는 `build` 메서드가 호출하는 생성자에서 수행한다. 또한 공격에 대비해 불변식을 보장하려면 빌더로부터 매개변수를 복사한 후 해당 객체 필드들도 검사해야 한다. 검사 중 잘못된 점을 발견하면 메시지와 함께 `IllegalArgumentException`을 던져주자.
+
+
+
+### 빌더 패턴은 계층적으로 설계된 클래스와 함께 쓰기에 좋다.
+
+다음은 피자의 다양한 종류를 표현하는 계층구조의 루트에 놓인 추상 클래스다.
+
+```java
+public abstract class Pizza {
+    public enum Topping { HAM, MUSHROOM, ONION, PEPPER, SAUSAGE }
+    final Set<Topping> toppings;
+
+    abstract static class Builder<T extends Builder<T>> {
+        EnumSet<Topping> toppings = EnumSet.noneOf(Topping.class);
+        public T addTopping(Topping topping) {
+            toppings.add(Objects.requireNonNull(topping));
+            return self();
+        }
+
+        abstract Pizza build();
+
+        // 하위 클래스는 이 메서드를 재정의하여 사용한다.
+        // "this"를 반환하도록 해야 한다.
+        protected abstract T self();
+    }
+
+    Pizza(Builder<?> builder) {
+        toppings = builder.toppings.clone();
+    }
+}
+```
+
+
+
+크기를 필수로 받는 "뉴욕피자"와 소스를 안에 넣을지 선택하는 "칼조네 피자"가 있다고 할 때 각각 `Pizza`를 상속받고 각 클래스의 빌더 역시 `Pizza.Builder`를 상속받아 구현한다. 필요에 따라 멤버 변수와 메서드를 추가 할 수 있으며, 아래와 같이 빌더에 따라 객체를 다르게 받을 수 있다.
+
+```java
+NyPizza pizza = new NyPizza.Builder(SMALL)
+    .addTopping(SAUSAGE).addTopping(ONION).build();
+Calzone calzone = new Calzone.Builder()
+    .addTopping(HAM).sauceInside().build();
+```
+
+
+
+> 생성자나 정적 팩터리가 처리해야 할 매개변수가 많다면 빌더 패턴을 선택하는게 더 낫다. 매개변수 중 다수가 필수가 아니거나 같은 타입이면 특히 더 그렇다. 빌더는 점층적 생성자보다 클라이언트 코드를 읽고 쓰기가 훨씬 간결하고, 자바빈즈보다 훨씬 안전하다.
 
