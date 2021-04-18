@@ -41,11 +41,11 @@ public static Boolean valueOf(boolean b) {
 
 ### 정적 팩터리 메서드 명명 규칙
 
-- **from**: 하나의 매개변수를 받아 인스턴스를 반환하는 형 변환 메서드
+- **from**: 하나의 매개변수를 받아 인스턴스를 반환하는 형 변환 메서드.
 `Date d = Date.from(instant);`
-- **of**: 여러 매개변수를 받아 적합한 인스턴스를 반환하는 집계 메서드
+- **of**: 여러 매개변수를 받아 적합한 인스턴스를 반환하는 집계 메서드.
 `Set<Rank> faceCards = EnumSet.of(JACK, QUEEN, KING);`
-- **valueOf**: from과 of의 더 자세한 버전
+- **valueOf**: from과 of의 더 자세한 버전.
 `BigInteger prime = BigInteger.valueOf(Integer.MAX_VALUE);` 
 - **instance/getInstance**: 인스턴스를 반환한다(생성 or 재사용 여부 불명).
 `StackWalker luke = StackWalker.getInstance(options);`
