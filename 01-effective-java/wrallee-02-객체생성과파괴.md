@@ -124,12 +124,12 @@ public class NutritionFacts {
 }
 ```
 
-
+빌더 패턴에서는 아래와 같이 빌더의 세터를 연쇄적으로 호출할 수 있다. 이를 플루언트(fluent) API 혹은 메서드 연쇄(method chaining)이라고 한다.
 
 ```java
 NutrionFacts cocaCola = new NutrionFacts.Builder(240, 8)
     .calories(100).sodium(35).carbohydrate(27).build();
 ```
 
-
+빌더 패턴에서의 불변식 검사는 `build` 메서드가 호출하는 생성자에서 수행한다. 또한 공격에 대비해 불변식을 보장하려면 빌더로부터 매개변수를 복사한 후 해당 객체 필드들도 검사해야 한다.
 
