@@ -52,5 +52,4 @@ public static Boolean valueOf(boolean b) {
 > 정적 팩터리를 사용하는게 유리한 경우가 많으므로 무작정 public 생성자를 제공하던 습관이 있다면 고치자.
 
 
-
 # 생성자에 매개변수가 많다면 빌더를 고려하라
