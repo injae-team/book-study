@@ -48,7 +48,8 @@ public static Boolean valueOf(boolean b) {
 - **type**: get*Type*과 new*Type*의 간결한 버전.
   <br>`List<Complaint> litany = Collections.list(legacyLitany);`
 
-> 정적 팩터리 메서드와 public 생성자는 각자 쓰임새가 있으니 상대적인 장단점을 이해하고 사용하는 것이 좋다. 그렇다고 하더라도 정적 팩터리를 사용하는게 유리한 경우가 더 많으므로 무작정 public 생성자를 제공하던 습관이 있다면 고치자.
+> 정적 팩터리 메서드 / public 생성자는 각자 쓰임새가 있으니 장단점을 이해하고 사용하는 것이 좋음.
+> 정적 팩터리를 사용하는게 유리한 경우가 많으므로 무작정 public 생성자를 제공하던 습관이 있다면 고치자.
 
 
 
